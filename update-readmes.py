@@ -102,7 +102,7 @@ def main():
 
         # the links that point to the subdir must now point to the
         # current directory, so we fix that
-        content = BEGINNING + content.replace(directory + '/', '').rstrip()
+        content = BEGINNING + content.replace(f'{directory}/', '').rstrip()
         path = os.path.join(directory, 'README.md')
         this_changed = update_file(path, content)
         something_changed = something_changed or this_changed

@@ -91,9 +91,7 @@ def header_link(title):
     for character in title:
         if character in string.whitespace:
             result += '-'
-        elif character in string.punctuation:
-            pass
-        else:
+        elif character not in string.punctuation:
             result += character.lower()
     return result
 
@@ -104,13 +102,7 @@ def askyesno(question, default=True):
     The default answer is yes if default is True and no if default is
     False.
     """
-    if default:
-        # yes by default
-        question += ' [Y/n] '
-    else:
-        # no by default
-        question += ' [y/N] '
-
+    question += ' [Y/n] ' if default else ' [y/N] '
     while True:
         result = input(question).upper().strip()
         if result == 'Y':
@@ -125,15 +117,15 @@ def askyesno(question, default=True):
 @contextlib.contextmanager
 def backup(filename):
     """A context manager that backs up a file."""
-    shutil.copy(filename, filename + '.backup')
+    shutil.copy(filename, f'{filename}.backup')
     try:
         yield
     except Exception:
         # It failed, we need to restore from the backup.
-        shutil.copy(filename + '.backup', filename)
+        shutil.copy(f'{filename}.backup', filename)
     else:
         # Everything's fine, we can safely get rid of the backup.
-        os.remove(filename + '.backup')
+        os.remove(f'{filename}.backup')
 
 
 def header_link(title):
@@ -149,8 +141,6 @@ def header_link(title):
     for character in title:
         if character in string.whitespace:
             result += '-'
-        elif character in string.punctuation:
-            pass
-        else:
+        elif character not in string.punctuation:
             result += character.lower()
     return result

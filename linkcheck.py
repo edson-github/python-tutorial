@@ -67,13 +67,11 @@ def check(this_file, target, title, titledict):
         # A directory.
         if not os.path.isdir(path):
             return "not a directory"
-    else:
-        # A file.
-        if not os.path.isfile(path):
-            return "not a file"
+    elif not os.path.isfile(path):
+        return "not a file"
 
     if title is not None and title not in titledict[path]:
-        return "no title named %s" % title
+        return f"no title named {title}"
     return "ok"
 
 
@@ -145,7 +143,7 @@ def main():
             status = check(filename, target, title, titledict)
             if status != "ok":
                 print("  file %s, line %d: %s" % (filename, lineno, status))
-                print("    %s" % get_line(filename, lineno))
+                print(f"    {get_line(filename, lineno)}")
                 broken += 1
             total += 1
 

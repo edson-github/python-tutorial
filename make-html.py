@@ -28,6 +28,7 @@
 
 """Create HTML files of the tutorial."""
 
+
 import argparse
 import os
 import platform
@@ -37,11 +38,7 @@ import sys
 import textwrap
 import webbrowser
 
-if platform.system() == 'Windows':
-    python = 'py'
-else:
-    python = 'python3'
-
+python = 'py' if platform.system() == 'Windows' else 'python3'
 try:
     import mistune
 except ImportError:
@@ -49,7 +46,7 @@ except ImportError:
     print("You can install it by running this command on a terminal or ")
     print("command prompt:")
     print()
-    print("    %s -m pip install mistune" % python)
+    print(f"    {python} -m pip install mistune")
     sys.exit(1)
 
 try:
@@ -108,7 +105,7 @@ def fix_filename(filename):
             # some/place/BEFORE -> some/place/AFTER
             return filename[:-len(before)] + after
     if filename.endswith('.md'):
-        filename = filename[:-3] + '.html'
+        filename = f'{filename[:-3]}.html'
     return filename
 
 
@@ -137,7 +134,7 @@ class TutorialRenderer(mistune.HTMLRenderer):
         elif '#' in link:
             # it's like "some-file#title", we need to fix some-file
             before, after = link.split('#', 1)
-            link = fix_filename(before) + '#' + after
+            link = f'{fix_filename(before)}#{after}'
         else:
             # it's like "some-file"
             link = fix_filename(link)
@@ -164,13 +161,11 @@ class TutorialRenderer(mistune.HTMLRenderer):
                     continue
 
                 if line.startswith('+'):
-                    result.append('<p><font color="green">%s</font></p>'
-                                  % line.strip('+'))
+                    result.append(f"""<p><font color="green">{line.strip('+')}</font></p>""")
                 elif line.startswith('-'):
-                    result.append('<p><font color="red">%s</font></p>'
-                                  % line.strip('-'))
+                    result.append(f"""<p><font color="red">{line.strip('-')}</font></p>""")
                 else:
-                    result.append('<p>%s</p>' % line)
+                    result.append(f'<p>{line}</p>')
 
             return '\n'.join(result)
 
@@ -191,9 +186,7 @@ class TutorialRenderer(mistune.HTMLRenderer):
 
 def wrap_text(text):
     """Like textwrap.fill, but respects newlines."""
-    result = []
-    for part in text.split('\n'):
-        result.append(textwrap.fill(part))
+    result = [textwrap.fill(part) for part in text.split('\n')]
     return '\n'.join(result)
 
 
@@ -226,7 +219,7 @@ def main():
     if pygments is None:
         print("Pygments isn't installed. You can install it like this:")
         print()
-        print("    %s -m pip install pygments" % python)
+        print(f"    {python} -m pip install pygments")
         print()
         print("You can also continue without Pygments, but the code examples")
         print("will not be colored.")
@@ -236,8 +229,9 @@ def main():
         args.pygments_style = None
 
     if os.path.exists(args.outdir):
-        if not common.askyesno("%s exists. Do you want to remove it?"
-                               % args.outdir):
+        if not common.askyesno(
+            f"{args.outdir} exists. Do you want to remove it?"
+        ):
             print("Interrupt.")
             return
         if os.path.isdir(args.outdir):
